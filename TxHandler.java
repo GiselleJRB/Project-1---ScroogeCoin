@@ -6,6 +6,7 @@ public class TxHandler {
 	 */
 	public TxHandler(UTXOPool utxoPool) {
 		// IMPLEMENT THIS
+		this.utxoPool = new UTXOPool(utxoPool);
 	}
 
 	/* Returns true if 
