@@ -3,6 +3,6 @@ Project-1---ScroogeCoin
 
 Authors:
 Tyler Nguyen (tylerlngu@csu.fullerton.edu)
-Giselle Roman ()
+Giselle Roman (gisellejbroman@csu.fullerton.edu)
 Sara Lee ()
 Matthew Chiasson ()
