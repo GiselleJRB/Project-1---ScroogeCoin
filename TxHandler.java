@@ -55,17 +55,17 @@ public class TxHandler {
    }
    public Transaction[] handleTxs(Transaction[] possibleTxs) {
 	   ArrayList<Transaction> acceptedTxs = new ArrayList<>();
-	   HashSet<Transaction> acceptedTxsSet = new HashSet<>();
+	   HashSet<Transaction> processedTxs = new HashSet<>();
         boolean valid = true;
         while (valid) {
             valid = false;
             for (Transaction tx : possibleTxs) {
-				if (acceptedTxsSet.contains(tx)) {
+				if (processedTxs.contains(tx)) {
 					continue; // Skip already accepted transactions
 				}
                 if (isValidTx(tx)) {
                     acceptedTxs.add(tx);
-                    acceptedTxsSet.add(tx);
+                    processedTxs.add(tx);
 
                     for (int i = 0; i < tx.numInputs(); i++) {
                         Transaction.Input in = tx.getInput(i);
