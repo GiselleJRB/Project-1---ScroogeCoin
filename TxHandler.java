@@ -3,18 +3,10 @@ public class TxHandler {
 	public TxHandler(UTXOPool utxoPool) {
 		this.utxoPool = new UTXOPool(utxoPool);
 	}
-
-   /* Returns true if 
-	* (1) all outputs claimed by tx are in the current UTXO pool, 
-	* (2) the signatures on each input of tx are valid, 
-	* (3) no UTXO is claimed multiple times by tx, 
-	* (4) all of tx’s output values are non-negative, and
-	* (5) the sum of tx’s input values is greater than or equal to the sum of   
-		  its output values;
-	   and false otherwise.
-	*/
-
    public boolean isValidTx(Transaction tx) {
+	   HashSet<UTXO> seen = new HashSet<>(); //creates collection that doesnt allow duplicates
+	   double sum_input = 0;
+	   double sum_output = 0;
 	  
 	  // Loop to run through all inputs in the transaction and check for validity
 	  for (int ix = 0; ix < tx.numInputs(); ix++) {
@@ -33,22 +25,30 @@ public class TxHandler {
 		 byte[] message = tx.getRawDataToSign(ix); // get raw data to sign for the input
 		 byte[] signature = input.signature; // get signature from the input
 
-		 if (!RSAKey.verifySignature(pubKey, message, signature)) {	
+		 if (!RSAKey.verifySignature(public_key, message, signature)) {	
 			return false;
 		 }
 
 		 // 3 No UTXO is claimed multiple times by tx
+		  if (seen.contains(ix_utxo)) {
+			  return false;
+		  }
+		  seen.add(ix_utxo);
+		  sum_input += output.value; //input sum
 	  }
-
-
-
-
-		 
-
-
-
-	  
-	  return false;
+		// 4  all of tx’s output values are non-negative, and
+	   for (int i=0; i< tx.numOutputs(); i++){
+		   Transaction.Output out= tx.getOutput(i); //this gets the current objects output
+		   if (out.value < 0) {
+			   return false;
+		   }
+		   sum_output +=out.value;
+		}
+	   //(5) the sum of tx’s input values is greater than or equal to the sum of its output values;
+	   	if(sum_input < sum_output){
+			return false;
+		}
+	  return true;
    }
    public Transaction[] handleTxs(Transaction[] possibleTxs) {
 	   ArrayList<Transaction> acceptedTxs = new ArrayList<>();
