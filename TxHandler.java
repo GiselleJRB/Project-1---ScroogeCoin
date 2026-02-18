@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.ArrayList;
+
 public class TxHandler {
 	private UTXOPool utxoPool;
 	public TxHandler(UTXOPool utxoPool) {
@@ -25,7 +28,7 @@ public class TxHandler {
 		 byte[] message = tx.getRawDataToSign(ix); // get raw data to sign for the input
 		 byte[] signature = input.signature; // get signature from the input
 
-		 if (!RSAKey.verifySignature(public_key, message, signature)) {	
+		 if (!public_key.verifySignature(message, signature)) {	
 			return false;
 		 }
 
@@ -52,12 +55,18 @@ public class TxHandler {
    }
    public Transaction[] handleTxs(Transaction[] possibleTxs) {
 	   ArrayList<Transaction> acceptedTxs = new ArrayList<>();
+	   HashSet<Transaction> acceptedTxsSet = new HashSet<>();
         boolean valid = true;
         while (valid) {
             valid = false;
             for (Transaction tx : possibleTxs) {
+				if (acceptedTxsSet.contains(tx)) {
+					continue; // Skip already accepted transactions
+				}
                 if (isValidTx(tx)) {
                     acceptedTxs.add(tx);
+                    acceptedTxsSet.add(tx);
+
                     for (int i = 0; i < tx.numInputs(); i++) {
                         Transaction.Input in = tx.getInput(i);
                         UTXO utxo = new UTXO(in.prevTxHash, in.outputIndex);
