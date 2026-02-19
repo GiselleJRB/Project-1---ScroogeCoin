@@ -63,32 +63,39 @@ public class TxHandler {
 	}
 
 	public Transaction[] handleTxs(Transaction[] possibleTxs) {
+		// stores all accepted valid transactions
 		ArrayList<Transaction> acceptedTxs = new ArrayList<>();
+		//tracks transactions that have already been processed to avoid duplicates
 		HashSet<Transaction> processedTxs = new HashSet<>();
 		boolean valid = true;
+		//repeating until no new valid transactions are found
 		while (valid) {
 			valid = false;
 			for (Transaction tx : possibleTxs) {
+				// skip if already processed
 				if (processedTxs.contains(tx)) {
 					continue;
 				}
+				// check validation and update UTXO pool accordingly
 				if (isValidTx(tx)) {
 					acceptedTxs.add(tx);
 					processedTxs.add(tx);
-
+					// remove consumed UTXOs and add new UTXOs
 					for (int i = 0; i < tx.numInputs(); i++) {
 						Transaction.Input in = tx.getInput(i);
 						UTXO utxo = new UTXO(in.prevTxHash, in.outputIndex);
 						utxoPool.removeUTXO(utxo);
 					}
+					// add new UTXOs created from the transaction
 					for (int i = 0; i < tx.numOutputs(); i++) {
 						UTXO newUTXO = new UTXO(tx.getHash(), i);
 						utxoPool.addUTXO(newUTXO, tx.getOutput(i));
 					}
-					valid = true;
+					valid = true; // found a valid transaction
 				}
 			}
 		}
+		// convert accepted transactions to array and return
 		Transaction[] transact = acceptedTxs.toArray(new Transaction[acceptedTxs.size()]);
 		return transact;
 	}
