@@ -8,7 +8,7 @@ Tyler Nguyen (tylerlngu@csu.fullerton.edu)
 
 Giselle Roman (gisellejbroman@csu.fullerton.edu)
 
-Sara Lee ()
+Sara Lee (saral1025@csu.fullerton.edu)
 
 Matthew Chiasson (machiasson@csu.fullerton.edu)
 
