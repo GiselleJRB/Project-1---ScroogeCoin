@@ -16,6 +16,6 @@ Autograde Steps:
 
 1. Copy TxHandler.java into grading fiolder
 2. Windows Key + R
-3. cd C: \grading
+3. cd C:\grading
 4. Compile with: javac -cp scroogeCoinGrader.jar;rsa.jar;algs4.jar;. TestTxHandler.java
 5. Run with: java -cp scroogeCoinGrader.jar;rsa.jar;algs4.jar;. TestTxHandler
